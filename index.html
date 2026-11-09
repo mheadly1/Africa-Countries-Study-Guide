@@ -1,0 +1,652 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Africa, one country at a time</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#E6EEEC; --surface:#FFFFFF; --ink:#1C2836; --muted:#55636F; --line:#C7D3D1;
+  --sea:#CFE2E8; --land:#F3ECD8; --land-hover:#E9DDBB; --land-stroke:#8F8264;
+  --other:#DCE4E3; --other-stroke:#BCC7C6;
+  --accent:#2C47B3; --accent-ink:#FFFFFF; --target:#EFA31A; --good:#2B8A5B; --late:#C7A126; --bad:#D0453C;
+  --rN:#E2A653; --rW:#7FB46F; --rC:#4E97B1; --rE:#B386AA; --rS:#E2846A;
+  --display:"Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", "Verdana", system-ui, sans-serif;
+  color-scheme: light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121B25; --surface:#1C2733; --ink:#E9EFF3; --muted:#9DAAB6; --line:#2F3D4B;
+    --sea:#163140; --land:#4A4434; --land-hover:#5C553F; --land-stroke:#9A8B63;
+    --other:#223140; --other-stroke:#2F4152;
+    --accent:#8CA0FF; --accent-ink:#0F1A3D; --target:#F5B53A; --good:#45B07B; --late:#D9B640; --bad:#EE6A5F;
+    --rN:#B9853F; --rW:#5D8F51; --rC:#3B7A92; --rE:#8E6787; --rS:#B5654F;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121B25; --surface:#1C2733; --ink:#E9EFF3; --muted:#9DAAB6; --line:#2F3D4B;
+  --sea:#163140; --land:#4A4434; --land-hover:#5C553F; --land-stroke:#9A8B63;
+  --other:#223140; --other-stroke:#2F4152;
+  --accent:#8CA0FF; --accent-ink:#0F1A3D; --target:#F5B53A; --good:#45B07B; --late:#D9B640; --bad:#EE6A5F;
+  --rN:#B9853F; --rW:#5D8F51; --rC:#3B7A92; --rE:#8E6787; --rS:#B5654F;
+  color-scheme: dark;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button,input{font:inherit;color:inherit}
+.wrap{max-width:1240px;margin:0 auto;padding:20px clamp(14px,3vw,32px) 28px}
+
+header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px 28px;margin-bottom:18px}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(1.9rem,5vw,3rem);line-height:1;letter-spacing:-.025em;margin:0}
+.sub{margin:.45rem 0 0;color:var(--muted);max-width:46ch}
+.mastery{min-width:220px;flex:0 1 300px}
+.meter{height:10px;border-radius:99px;background:var(--line);overflow:hidden}
+.meter span{display:block;height:100%;width:0;background:var(--good);border-radius:99px;transition:width .5s ease}
+#meterText{margin:.35rem 0 0;font-size:.92rem;color:var(--muted)}
+
+.controls{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;margin-bottom:16px}
+.tabs{display:inline-flex;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:4px;gap:2px;overflow-x:auto;max-width:100%}
+.tab{border:0;background:transparent;padding:.55rem 1rem;border-radius:10px;font-weight:700;cursor:pointer;white-space:nowrap}
+@media (max-width:480px){.tab{padding:.5rem .7rem;font-size:.95rem}.tabs{width:100%;justify-content:space-between}}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--bg)}
+.tab:not([aria-selected="true"]):hover{background:var(--bg)}
+.regions{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:.45rem;border:1px solid var(--line);background:transparent;border-radius:99px;padding:.3rem .75rem;cursor:pointer;font-size:.93rem}
+.chip .sw{width:10px;height:10px;border-radius:50%;background:var(--muted)}
+.chip .n{color:var(--muted);font-size:.85rem}
+.chip[aria-pressed="true"]{background:var(--surface);border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+
+.layout{display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
+@media (min-width:920px){.layout{grid-template-columns:minmax(320px,390px) minmax(0,1fr);align-items:start}}
+.panel{background:var(--surface);border-radius:22px;padding:22px 22px 24px;border:1px solid var(--line)}
+@media (min-width:920px){.panel{position:sticky;top:calc(16px + env(safe-area-inset-top,0px))}}
+.panel h2{font-family:var(--display);font-weight:600;font-size:1.05rem;margin:0 0 .25rem;color:var(--muted);letter-spacing:-.005em}
+.panel p{margin:.35rem 0}
+.help{color:var(--muted);font-size:.95rem}
+.prompt{font-family:var(--display);font-weight:800;font-size:clamp(1.9rem,5.5vw,2.6rem);line-height:1.04;letter-spacing:-.02em;margin:.4rem 0 .5rem;overflow-wrap:anywhere}
+.feedback{min-height:1.6em;font-weight:700;margin:.4rem 0}
+.feedback.good{color:var(--good)} .feedback.bad{color:var(--bad)} .feedback.info{color:var(--muted)}
+.count{color:var(--muted);font-size:.92rem;margin-top:.8rem}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.btn{border:1px solid var(--line);background:transparent;border-radius:12px;padding:.6rem 1.05rem;font-weight:700;cursor:pointer}
+.btn:hover{border-color:var(--ink)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.good{background:var(--good);border-color:var(--good);color:#fff}
+.btn.bad{background:transparent;border-color:var(--bad);color:var(--bad)}
+.btn:disabled{opacity:.45;cursor:default}
+input.guess{width:100%;margin-top:10px;padding:.75rem .9rem;border-radius:12px;border:2px solid var(--line);background:var(--bg);font-size:1.1rem}
+input.guess:focus{outline:none;border-color:var(--accent)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+.info{margin-top:14px;border-top:1px solid var(--line);padding-top:14px}
+.info .name{font-family:var(--display);font-weight:800;font-size:1.8rem;line-height:1.05;letter-spacing:-.02em;margin:0}
+.facts{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:.7rem 0 0}
+.facts dt{color:var(--muted)} .facts dd{margin:0;font-weight:700}
+.note{font-size:.92rem;color:var(--muted);margin-top:.5rem}
+.toggles{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.toggle{display:inline-flex;align-items:center;gap:.5rem;border:1px solid var(--line);border-radius:99px;padding:.35rem .8rem;cursor:pointer;background:transparent;font-size:.93rem}
+.toggle[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.list{margin-top:14px;max-height:280px;overflow:auto;border-top:1px solid var(--line);padding-top:8px;columns:2;column-gap:12px}
+.list button{display:block;width:100%;text-align:left;border:0;background:transparent;padding:.22rem .3rem;border-radius:6px;cursor:pointer;font-size:.93rem;break-inside:avoid}
+.list button:hover{background:var(--bg)}
+.list .m{color:var(--good);font-weight:700}
+
+.card{margin-top:12px;border-radius:18px;border:2px solid var(--line);min-height:170px;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:18px;cursor:pointer;background:var(--bg);width:100%;text-align:left}
+.card .side{font-size:.88rem;color:var(--muted)}
+.card .face{font-family:var(--display);font-weight:800;font-size:clamp(1.7rem,5vw,2.3rem);line-height:1.05;letter-spacing:-.02em;margin:.25rem 0}
+.card.flipped{border-color:var(--accent)}
+.flip-in{animation:flipIn .32s ease}
+@keyframes flipIn{from{transform:rotateX(70deg);opacity:.3}to{transform:none;opacity:1}}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;padding:3px;margin-top:10px}
+.seg button{border:0;background:transparent;padding:.35rem .7rem;border-radius:7px;cursor:pointer;font-size:.9rem;font-weight:700}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.big-score{font-family:var(--display);font-weight:800;font-size:3.2rem;line-height:1;letter-spacing:-.03em;margin:.4rem 0}
+
+.mapcard{position:relative;background:var(--sea);border-radius:22px;overflow:hidden;border:1px solid var(--line);aspect-ratio:1/1.02;max-height:84vh;width:100%}
+@media (max-width:919px){.mapcard{aspect-ratio:1/1.05;max-height:none}}
+#map{display:block;width:100%;height:100%;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
+#map.dragging{cursor:grabbing}
+.zoom{position:absolute;right:12px;top:12px;display:flex;flex-direction:column;gap:6px}
+.zoom button{width:42px;height:42px;border-radius:12px;border:1px solid var(--line);background:var(--surface);font-size:1.3rem;font-weight:700;cursor:pointer;line-height:1}
+.zoom button.txt{font-size:.75rem}
+.legend{position:absolute;left:12px;bottom:12px;display:flex;flex-wrap:wrap;gap:6px 10px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:6px 10px;font-size:.82rem;max-width:calc(100% - 24px)}
+.legend span{display:inline-flex;align-items:center;gap:.35rem}
+.legend[hidden]{display:none}
+.legend i{width:10px;height:10px;border-radius:50%;display:inline-block}
+.mapmsg{position:absolute;inset:0;display:none;align-items:center;justify-content:center;text-align:center;padding:24px;color:var(--muted)}
+.mapmsg.show{display:flex}
+
+/* map paint */
+.other{fill:var(--other);stroke:var(--other-stroke);stroke-width:.6;vector-effect:non-scaling-stroke}
+.ctry{fill:var(--land);stroke:var(--land-stroke);stroke-width:.9;vector-effect:non-scaling-stroke;stroke-linejoin:round;cursor:pointer;transition:fill .18s,opacity .18s}
+.ctry.dot{stroke-width:1.2}
+.live .ctry:not(.faded):hover{fill:var(--land-hover)}
+.colored .ctry.rg-N{fill:var(--rN)} .colored .ctry.rg-W{fill:var(--rW)} .colored .ctry.rg-C{fill:var(--rC)} .colored .ctry.rg-E{fill:var(--rE)} .colored .ctry.rg-S{fill:var(--rS)}
+.ctry.faded{opacity:.3;cursor:default}
+.ctry.sel{fill:var(--accent)!important}
+.ctry.target{fill:var(--target)!important}
+.ctry.got{fill:var(--good)!important}
+.ctry.late{fill:var(--late)!important}
+.ctry.missed{fill:var(--bad)!important}
+.ctry.flash{animation:flash .7s ease}
+@keyframes flash{0%,100%{fill:var(--land)}25%,60%{fill:var(--bad)}}
+.ring{fill:none;stroke:var(--target);stroke-width:2.5;vector-effect:non-scaling-stroke;pointer-events:none;animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{50%{stroke-opacity:.25}}
+.lbl{fill:var(--ink);font-family:var(--body);font-weight:700;paint-order:stroke;stroke:var(--surface);stroke-linejoin:round;pointer-events:none;text-anchor:middle;dominant-baseline:middle}
+@media (prefers-reduced-motion: reduce){.ring,.ctry.flash,.flip-in{animation:none}.meter span,.ctry{transition:none}}
+
+footer{margin-top:20px;color:var(--muted);font-size:.9rem;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center}
+.linkbtn{border:0;background:none;color:var(--accent);text-decoration:underline;cursor:pointer;padding:0;font-size:.9rem}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+</style>
+<script>window.__maps={};window.jsVectorMap={addMap:function(n,d){window.__maps[n]=d;}};</script>
+<script src="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/maps/world.js"></script>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>Africa, one country at a time</h1>
+      <p class="sub">All 54 countries. Explore the map first, then quiz yourself until every country turns green.</p>
+    </div>
+    <div class="mastery" aria-live="polite">
+      <div class="meter"><span id="meterFill"></span></div>
+      <p id="meterText">0 of 54 countries mastered</p>
+    </div>
+  </header>
+
+  <div class="controls">
+    <div class="tabs" role="tablist" aria-label="Study mode">
+      <button class="tab" role="tab" data-mode="explore" aria-selected="true">Explore</button>
+      <button class="tab" role="tab" data-mode="find" aria-selected="false">Find it</button>
+      <button class="tab" role="tab" data-mode="name" aria-selected="false">Name it</button>
+      <button class="tab" role="tab" data-mode="capitals" aria-selected="false">Capitals</button>
+    </div>
+    <div class="regions" id="regions" aria-label="Choose a region"></div>
+  </div>
+
+  <main class="layout">
+    <section class="panel" id="panel" aria-live="polite"></section>
+    <section class="mapcard" aria-label="Map of Africa">
+      <svg id="map" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Blank map of Africa"></svg>
+      <div class="zoom">
+        <button id="zin" aria-label="Zoom in">+</button>
+        <button id="zout" aria-label="Zoom out">−</button>
+        <button id="zreset" class="txt" aria-label="Reset zoom">Fit</button>
+      </div>
+      <div class="legend" id="legend" hidden></div>
+      <div class="mapmsg" id="mapmsg"></div>
+    </section>
+  </main>
+
+  <footer>
+    <span>Progress saves in this browser. A country counts as mastered after you get it right twice in a row in Find it or Name it.</span>
+    <button class="linkbtn" id="resetProgress">Reset progress</button>
+  </footer>
+</div>
+
+<script>
+(function(){
+"use strict";
+var REG={N:"North",W:"West",C:"Central",E:"East",S:"Southern"};
+var RAW=[
+["DZ","Algeria","Algiers","N"],["AO","Angola","Luanda","C"],["BJ","Benin","Porto-Novo","W"],["BW","Botswana","Gaborone","S"],
+["BF","Burkina Faso","Ouagadougou","W"],["BI","Burundi","Gitega","E"],["CV","Cabo Verde","Praia","W"],["CM","Cameroon","Yaoundé","C"],
+["CF","Central African Republic","Bangui","C"],["TD","Chad","N’Djamena","C"],["KM","Comoros","Moroni","E"],
+["CD","Democratic Republic of the Congo","Kinshasa","C"],["CG","Republic of the Congo","Brazzaville","C"],["CI","Côte d’Ivoire","Yamoussoukro","W"],
+["DJ","Djibouti","Djibouti","E"],["EG","Egypt","Cairo","N"],["GQ","Equatorial Guinea","Ciudad de la Paz","C"],["ER","Eritrea","Asmara","E"],
+["SZ","Eswatini","Mbabane","S"],["ET","Ethiopia","Addis Ababa","E"],["GA","Gabon","Libreville","C"],["GM","The Gambia","Banjul","W"],
+["GH","Ghana","Accra","W"],["GN","Guinea","Conakry","W"],["GW","Guinea-Bissau","Bissau","W"],["KE","Kenya","Nairobi","E"],
+["LS","Lesotho","Maseru","S"],["LR","Liberia","Monrovia","W"],["LY","Libya","Tripoli","N"],["MG","Madagascar","Antananarivo","E"],
+["MW","Malawi","Lilongwe","E"],["ML","Mali","Bamako","W"],["MR","Mauritania","Nouakchott","W"],["MU","Mauritius","Port Louis","E"],
+["MA","Morocco","Rabat","N"],["MZ","Mozambique","Maputo","E"],["NA","Namibia","Windhoek","S"],["NE","Niger","Niamey","W"],
+["NG","Nigeria","Abuja","W"],["RW","Rwanda","Kigali","E"],["ST","São Tomé and Príncipe","São Tomé","C"],["SN","Senegal","Dakar","W"],
+["SC","Seychelles","Victoria","E"],["SL","Sierra Leone","Freetown","W"],["SO","Somalia","Mogadishu","E"],["ZA","South Africa","Pretoria","S"],
+["SS","South Sudan","Juba","E"],["SD","Sudan","Khartoum","N"],["TZ","Tanzania","Dodoma","E"],["TG","Togo","Lomé","W"],
+["TN","Tunisia","Tunis","N"],["UG","Uganda","Kampala","E"],["ZM","Zambia","Lusaka","E"],["ZW","Zimbabwe","Harare","E"]
+];
+var NOTES={
+ CI:"Abidjan is the largest city and the economic center.",
+ ZA:"Pretoria is the executive capital. Cape Town (legislative) and Bloemfontein (judicial) share the role.",
+ SZ:"Lobamba is the royal and legislative capital.",
+ BJ:"Cotonou is the largest city and seat of government.",
+ TZ:"Dar es Salaam is the largest city.",
+ BI:"Gitega replaced Bujumbura as the capital in 2019.",
+ NG:"Lagos is the largest city.",
+ MA:"Casablanca is the largest city.",
+ CM:"Douala is the largest city.",
+ GQ:"Replaced Malabo as the capital in January 2026. Some older maps still list Malabo.",
+ EG:"A new administrative capital is being built east of Cairo.",
+ CD:"Not to be confused with its neighbor, the Republic of the Congo.",
+ CG:"Not to be confused with its neighbor, the Democratic Republic of the Congo."
+};
+var ALIASES={
+ CV:["cape verde","cabo verde"],CD:["drc","dr congo","drcongo","congo kinshasa","democratic republic of congo","dem rep congo","democratic republic of the congo"],
+ CG:["congo","republic of congo","congo brazzaville","republic of the congo"],CI:["ivory coast","cote divoire","cote d ivoire"],
+ SZ:["swaziland","eswatini"],GM:["gambia","the gambia"],ST:["sao tome","sao tome and principe","sao tome principe"],CF:["car","central african republic"],
+ GW:["guinea bissau"],TZ:["tanzania","united republic of tanzania"]
+};
+var PTS={CV:[15.1,-23.6],KM:[-11.9,43.9],MU:[-20.3,57.6],SC:[-4.6,55.5],ST:[0.3,6.7],SS:[7.0,30.0],GM:[13.45,-15.4],SZ:[-26.5,31.5],LS:[-29.6,28.2],DJ:[11.7,42.6],GQ:[1.6,10.4],RW:[-2.0,29.9],BI:[-3.4,29.9]};
+var ISLANDS=["CV","KM","MU","SC","ST"];
+
+var C=RAW.map(function(a){return {c:a[0],n:a[1],cap:a[2],r:a[3]};});
+var BY={}; C.forEach(function(x){BY[x.c]=x;});
+
+/* ---------- storage ---------- */
+var KEY="africa-study-v1", prog={};
+try{prog=JSON.parse(localStorage.getItem(KEY)||"{}")||{};}catch(e){prog={};}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(prog));}catch(e){}}
+function p(c){return prog[c]||(prog[c]={m:0,cap:0});}
+function mastered(c){return (prog[c]&&prog[c].m>=2);}
+function record(c,ok){var x=p(c);x.m=ok?Math.min(x.m+1,9):0;save();updateMeter();}
+function recordCap(c,ok){var x=p(c);x.cap=ok?Math.min(x.cap+1,9):0;save();}
+function updateMeter(){
+  var n=C.filter(function(x){return mastered(x.c);}).length;
+  document.getElementById("meterFill").style.width=(n/54*100)+"%";
+  document.getElementById("meterText").textContent=n+" of 54 countries mastered";
+}
+
+/* ---------- helpers ---------- */
+function $(s,r){return (r||document).querySelector(s);}
+function esc(s){return String(s).replace(/[&<>"]/g,function(ch){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[ch];});}
+function norm(s){return String(s).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/&/g," and ").replace(/[’'`]/g,"").replace(/[^a-z]+/g," ").trim().replace(/^the /,"").replace(/ /g,"");}
+function lev(a,b){var m=a.length,n=b.length,d=[],i,j;for(i=0;i<=m;i++){d[i]=[i];}for(j=0;j<=n;j++){d[0][j]=j;}
+  for(i=1;i<=m;i++){for(j=1;j<=n;j++){d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1));}}return d[m][n];}
+function matches(code,guess){
+  var g=norm(guess); if(!g) return false;
+  var opts=[BY[code].n].concat(ALIASES[code]||[]).map(norm);
+  for(var i=0;i<opts.length;i++){
+    if(g===opts[i]) return true;
+    if(opts[i].length>=6 && lev(g,opts[i])<=1) return true;
+  }
+  return false;
+}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+
+/* ---------- state ---------- */
+var mode="explore", region="all", colorRegions=true, showLabels=false, selected=null;
+function pool(){return C.filter(function(x){return region==="all"||x.r===region;}).map(function(x){return x.c;});}
+
+/* ---------- map ---------- */
+var NS="http://www.w3.org/2000/svg";
+var svg=document.getElementById("map");
+var els={}, centers={}, sizes={}, mapOK=false, unit=1, base=null, vb=null;
+var gRing, gLabels;
+function mk(tag,attrs){var e=document.createElementNS(NS,tag);for(var k in attrs){e.setAttribute(k,attrs[k]);}return e;}
+function bboxOf(code){
+  var list=els[code]; if(!list||!list.length) return null;
+  var x1=Infinity,y1=Infinity,x2=-Infinity,y2=-Infinity;
+  list.forEach(function(el){if(el.tagName.toLowerCase()==="circle")return;var b=el.getBBox();x1=Math.min(x1,b.x);y1=Math.min(y1,b.y);x2=Math.max(x2,b.x+b.width);y2=Math.max(y2,b.y+b.height);});
+  if(x1===Infinity) return null;
+  return {x:x1,y:y1,width:x2-x1,height:y2-y1};
+}
+function buildMap(){
+  var m=window.__maps&&(window.__maps.world||window.__maps[Object.keys(window.__maps)[0]]);
+  if(!m||!m.paths){return false;}
+  var gOther=mk("g",{}), gLand=mk("g",{}), gDots=mk("g",{});
+  gRing=mk("g",{}); gLabels=mk("g",{});
+  svg.appendChild(gOther);svg.appendChild(gLand);svg.appendChild(gDots);svg.appendChild(gRing);svg.appendChild(gLabels);
+  Object.keys(m.paths).forEach(function(k){
+    var pth=m.paths[k]; if(!pth||!pth.path) return;
+    var code=k.toUpperCase();
+    if(!BY[code] && /somaliland/i.test(pth.name||"")) code="SO";
+    var el=mk("path",{d:pth.path});
+    if(BY[code]){
+      el.setAttribute("class","ctry rg-"+BY[code].r); el.setAttribute("data-c",code);
+      (els[code]||(els[code]=[])).push(el); gLand.appendChild(el);
+    }else{ el.setAttribute("class","other"); gOther.appendChild(el); }
+  });
+  var sn=bboxOf("SN"), so=bboxOf("SO"), tn=bboxOf("TN"), mg=bboxOf("MG");
+  if(!sn||!so||!tn||!mg) return false;
+  function mill(lat){return 1.25*Math.log(Math.tan(Math.PI/4+0.4*lat*Math.PI/180));}
+  var ax=((so.x+so.width)-sn.x)/(51.41+17.53), bx=sn.x-ax*(-17.53);
+  var ay=((mg.y+mg.height)-tn.y)/(mill(-25.6)-mill(37.34)), by=tn.y-ay*mill(37.34);
+  function project(lat,lon){return [ax*lon+bx, ay*mill(lat)+by];}
+
+  // overall africa box for sizing
+  var A={x1:Infinity,y1:Infinity,x2:-Infinity,y2:-Infinity};
+  C.forEach(function(x){var b=bboxOf(x.c);if(!b)return;A.x1=Math.min(A.x1,b.x);A.y1=Math.min(A.y1,b.y);A.x2=Math.max(A.x2,b.x+b.width);A.y2=Math.max(A.y2,b.y+b.height);});
+  unit=(A.x2-A.x1)/100;
+
+  C.forEach(function(x){
+    var b=bboxOf(x.c), cx, cy;
+    if(b){cx=b.x+b.width/2;cy=b.y+b.height/2;sizes[x.c]=Math.sqrt(b.width*b.width+b.height*b.height);}
+    else if(PTS[x.c]){var pt=project(PTS[x.c][0],PTS[x.c][1]);cx=pt[0];cy=pt[1];sizes[x.c]=0;}
+    else return;
+    centers[x.c]=[cx,cy];
+    if(ISLANDS.indexOf(x.c)>=0||!b){
+      var dot=mk("circle",{cx:cx,cy:cy,r:unit*1.3,"class":"ctry dot rg-"+x.r,"data-c":x.c});
+      (els[x.c]||(els[x.c]=[])).push(dot); gDots.appendChild(dot);
+      A.x1=Math.min(A.x1,cx-unit*2);A.x2=Math.max(A.x2,cx+unit*2);A.y1=Math.min(A.y1,cy-unit*2);A.y2=Math.max(A.y2,cy+unit*2);
+    }
+  });
+  // labels
+  var fs=unit*1.35;
+  C.forEach(function(x){
+    if(!centers[x.c]) return;
+    var c=centers[x.c], isl=ISLANDS.indexOf(x.c)>=0;
+    var t=mk("text",{x:c[0],y:isl?c[1]-unit*2.6:c[1],"font-size":(sizes[x.c]&&sizes[x.c]<unit*4)?fs*.75:fs,"stroke-width":fs*.28,"class":"lbl"});
+    t.textContent=x.n.replace("Democratic Republic of the Congo","DR Congo").replace("Republic of the Congo","Rep. of the Congo").replace("Central African Republic","Central African Rep.").replace("São Tomé and Príncipe","São Tomé & Príncipe");
+    gLabels.appendChild(t);
+  });
+  var pad=unit*3;
+  base={x:A.x1-pad,y:A.y1-pad,w:(A.x2-A.x1)+pad*2,h:(A.y2-A.y1)+pad*2};
+  vb=Object.assign({},base); setVB();
+  return true;
+}
+function setVB(){svg.setAttribute("viewBox",vb.x+" "+vb.y+" "+vb.w+" "+vb.h);}
+function zoomAt(f,px,py){
+  var nw=Math.min(Math.max(vb.w*f,base.w/10),base.w*1.25); f=nw/vb.w;
+  if(px===undefined){px=vb.x+vb.w/2;py=vb.y+vb.h/2;}
+  vb.x=px-(px-vb.x)*f; vb.y=py-(py-vb.y)*f; vb.w*=f; vb.h*=f; setVB();
+}
+function zoomTo(code){
+  var b=bboxOf(code)||(centers[code]?{x:centers[code][0]-unit*3,y:centers[code][1]-unit*3,width:unit*6,height:unit*6}:null);
+  if(!b) return;
+  var s=Math.max(b.width,b.height,unit*14)*1.9;
+  var r=base.h/base.w;
+  vb={x:b.x+b.width/2-s/2,y:b.y+b.height/2-s*r/2,w:s,h:s*r}; setVB();
+}
+function resetZoom(){if(base){vb=Object.assign({},base);setVB();}}
+function svgPoint(cx,cy){var pt=svg.createSVGPoint();pt.x=cx;pt.y=cy;var m=svg.getScreenCTM();return m?pt.matrixTransform(m.inverse()):{x:vb.x+vb.w/2,y:vb.y+vb.h/2};}
+
+// pan / pinch
+var ptrs=new Map(), moved=0, last=null, pinch=null;
+svg.addEventListener("pointerdown",function(e){
+  ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(ptrs.size===1){moved=0;last={x:e.clientX,y:e.clientY};}
+  if(ptrs.size===2){var a=Array.from(ptrs.values());pinch={d:Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y)};}
+});
+window.addEventListener("pointermove",function(e){
+  if(!ptrs.has(e.pointerId)||!vb) return;
+  ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  var scale=Math.max(vb.w/svg.clientWidth,vb.h/svg.clientHeight);
+  if(ptrs.size===1&&last){
+    var dx=e.clientX-last.x, dy=e.clientY-last.y; moved+=Math.abs(dx)+Math.abs(dy);
+    if(moved>6){svg.classList.add("dragging");vb.x-=dx*scale;vb.y-=dy*scale;setVB();}
+    last={x:e.clientX,y:e.clientY};
+  }else if(ptrs.size===2&&pinch){
+    var a=Array.from(ptrs.values()); var d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);
+    var mid=svgPoint((a[0].x+a[1].x)/2,(a[0].y+a[1].y)/2);
+    if(d>0){zoomAt(pinch.d/d,mid.x,mid.y);pinch.d=d;moved=99;}
+  }
+});
+function endPtr(e){ptrs.delete(e.pointerId);if(ptrs.size<2)pinch=null;if(ptrs.size===1){var v=Array.from(ptrs.values())[0];last={x:v.x,y:v.y};}if(!ptrs.size){svg.classList.remove("dragging");}}
+window.addEventListener("pointerup",endPtr);window.addEventListener("pointercancel",endPtr);
+svg.addEventListener("wheel",function(e){if(!vb)return;e.preventDefault();var pt=svgPoint(e.clientX,e.clientY);zoomAt(e.deltaY>0?1.15:1/1.15,pt.x,pt.y);},{passive:false});
+document.getElementById("zin").onclick=function(){if(vb)zoomAt(1/1.4);};
+document.getElementById("zout").onclick=function(){if(vb)zoomAt(1.4);};
+document.getElementById("zreset").onclick=resetZoom;
+
+svg.addEventListener("click",function(e){
+  if(moved>6) return;
+  var t=e.target.closest&&e.target.closest(".ctry"); if(!t) return;
+  onCountryClick(t.getAttribute("data-c"));
+});
+
+/* ---------- paint ---------- */
+var STATE_CLASSES=["sel","target","got","late","missed","flash","faded"];
+function setCls(code,cls,on){(els[code]||[]).forEach(function(el){el.classList.toggle(cls,!!on);});}
+function clearStates(){C.forEach(function(x){STATE_CLASSES.forEach(function(s){if(s!=="faded")setCls(x.c,s,false);});});clearRing();}
+function applyFilter(){var P=pool();C.forEach(function(x){setCls(x.c,"faded",P.indexOf(x.c)<0);});}
+function clearRing(){if(gRing)while(gRing.firstChild)gRing.removeChild(gRing.firstChild);}
+function ring(code){
+  clearRing(); if(!centers[code]) return;
+  var s=sizes[code];
+  if(s&&s>unit*11) return;
+  var r=Math.max((s||0)/2+unit*1.6,unit*3);
+  gRing.appendChild(mk("circle",{cx:centers[code][0],cy:centers[code][1],r:r,"class":"ring"}));
+}
+function flash(code){(els[code]||[]).forEach(function(el){el.classList.remove("flash");void el.getBBox;el.getBoundingClientRect();el.classList.add("flash");});setTimeout(function(){setCls(code,"flash",false);},750);}
+function paintMode(){
+  svg.classList.toggle("colored",mode==="explore"&&colorRegions);
+  svg.classList.toggle("live",mode==="explore"||mode==="find");
+  if(gLabels) gLabels.style.display=(mode==="explore"&&showLabels)?"":"none";
+  var lg=document.getElementById("legend");
+  lg.hidden=!(mode==="explore"&&colorRegions&&mapOK);
+}
+
+/* ---------- regions ---------- */
+function renderRegions(){
+  var box=document.getElementById("regions"), html="";
+  var items=[["all","All Africa",null]].concat(Object.keys(REG).map(function(k){return [k,REG[k],k];}));
+  items.forEach(function(it){
+    var n=it[0]==="all"?54:C.filter(function(x){return x.r===it[0];}).length;
+    html+="<button class=\"chip\" data-r=\""+it[0]+"\" aria-pressed=\""+(region===it[0])+"\">"+(it[2]?"<span class=\"sw\" style=\"background:var(--r"+it[2]+")\"></span>":"")+esc(it[1])+" <span class=\"n\">"+n+"</span></button>";
+  });
+  box.innerHTML=html;
+  document.getElementById("legend").innerHTML=Object.keys(REG).map(function(k){return "<span><i style=\"background:var(--r"+k+")\"></i>"+REG[k]+"</span>";}).join("");
+}
+document.getElementById("regions").addEventListener("click",function(e){
+  var b=e.target.closest(".chip"); if(!b) return;
+  region=b.getAttribute("data-r"); renderRegions(); startMode();
+  if(mapOK){ if(region==="all") resetZoom(); else fitPool(); }
+});
+function fitPool(){
+  var P=pool(),x1=Infinity,y1=Infinity,x2=-Infinity,y2=-Infinity;
+  P.forEach(function(c){var b=bboxOf(c);if(!b&&centers[c])b={x:centers[c][0]-unit*2,y:centers[c][1]-unit*2,width:unit*4,height:unit*4};if(!b)return;x1=Math.min(x1,b.x);y1=Math.min(y1,b.y);x2=Math.max(x2,b.x+b.width);y2=Math.max(y2,b.y+b.height);});
+  if(x1===Infinity) return;
+  var pad=unit*4, w=x2-x1+pad*2, h=y2-y1+pad*2, r=base.h/base.w;
+  if(h/w>r){w=h/r;}else{h=w*r;}
+  vb={x:(x1+x2)/2-w/2,y:(y1+y2)/2-h/2,w:w,h:h}; setVB();
+}
+
+/* ---------- modes ---------- */
+var panel=document.getElementById("panel");
+var deck=[], idx=0, cur=null, tries=0, firstTry=0, done=0, missed=[], locked=false, revealed=false, total=0;
+var capDir="toCap";
+
+document.querySelector(".tabs").addEventListener("click",function(e){
+  var b=e.target.closest(".tab"); if(!b) return;
+  mode=b.getAttribute("data-mode");
+  document.querySelectorAll(".tab").forEach(function(t){t.setAttribute("aria-selected",String(t===b));});
+  startMode();
+});
+
+function startMode(customDeck){
+  clearStates(); applyFilter(); paintMode(); selected=null;
+  if(mode==="explore"){renderExplore();return;}
+  deck=customDeck||shuffle(pool()); idx=0; firstTry=0; done=0; missed=[]; total=deck.length;
+  if((mode==="find"||mode==="name")&&!mapOK){panel.innerHTML="<h2>Map needed</h2><p>This mode needs the map, which didn’t load. Reload the page, or use Capitals in the meantime.</p>";return;}
+  nextCard();
+}
+function nextCard(){
+  clearRing(); locked=false; revealed=false; tries=0;
+  if(mode==="name"||mode==="capitals"){C.forEach(function(x){setCls(x.c,"target",false);});}
+  if(idx>=deck.length){renderSummary();return;}
+  cur=deck[idx];
+  if(mode==="find") renderFind();
+  else if(mode==="name") renderName();
+  else renderCapital();
+}
+function advance(){idx++;nextCard();}
+function requeue(code){
+  var pos=Math.min(deck.length,idx+3+Math.floor(Math.random()*3));
+  deck.splice(pos,0,code);
+}
+
+/* explore */
+function renderExplore(){
+  var P=pool().slice().sort(function(a,b){return BY[a].n.localeCompare(BY[b].n);});
+  var info=selected?infoHTML(selected):"<p class=\"help\">Nothing selected yet. Tap a country on the map or a name in the list.</p>";
+  panel.innerHTML=
+    "<h2>Explore</h2>"+
+    "<p class=\"help\">Tap any country to see its name, capital and region. Pinch, scroll or use + to zoom in on the small ones.</p>"+
+    "<div class=\"toggles\">"+
+      "<button class=\"toggle\" id=\"tColor\" aria-pressed=\""+colorRegions+"\">Color by region</button>"+
+      "<button class=\"toggle\" id=\"tLabels\" aria-pressed=\""+showLabels+"\">Show names</button>"+
+    "</div>"+
+    "<div class=\"info\" id=\"info\">"+info+"</div>"+
+    "<div class=\"list\" id=\"list\">"+P.map(function(c){return "<button data-c=\""+c+"\">"+esc(BY[c].n)+(mastered(c)?" <span class=\"m\" aria-label=\"mastered\">✓</span>":"")+"</button>";}).join("")+"</div>";
+  $("#tColor").onclick=function(){colorRegions=!colorRegions;renderExplore();paintMode();};
+  $("#tLabels").onclick=function(){showLabels=!showLabels;renderExplore();paintMode();};
+  $("#list").onclick=function(e){var b=e.target.closest("button[data-c]");if(!b)return;selectCountry(b.getAttribute("data-c"),true);};
+  if(selected){setCls(selected,"sel",true);ring(selected);}
+}
+function infoHTML(c){
+  var x=BY[c];
+  return "<p class=\"name\">"+esc(x.n)+"</p>"+
+    "<dl class=\"facts\"><dt>Capital</dt><dd>"+esc(x.cap)+"</dd><dt>Region</dt><dd>"+REG[x.r]+" Africa</dd></dl>"+
+    (NOTES[c]?"<p class=\"note\">"+esc(NOTES[c])+"</p>":"");
+}
+function selectCountry(c,zoom){
+  if(selected){setCls(selected,"sel",false);}
+  selected=c; setCls(c,"sel",true); ring(c);
+  var info=$("#info"); if(info) info.innerHTML=infoHTML(c);
+  if(zoom&&mapOK&&sizes[c]!==undefined&&sizes[c]<unit*12) zoomTo(c);
+}
+
+/* find it */
+function renderFind(){
+  panel.innerHTML=
+    "<h2>Find it on the map</h2>"+
+    "<p class=\"help\">Tap the country named below. You get three tries.</p>"+
+    "<p class=\"prompt\" id=\"prompt\">"+esc(BY[cur].n)+"</p>"+
+    "<p class=\"feedback\" id=\"fb\"></p>"+
+    "<div class=\"row\"><button class=\"btn\" id=\"showMe\">Show me</button><button class=\"btn primary\" id=\"nextBtn\" hidden>Next country</button></div>"+
+    countHTML();
+  $("#showMe").onclick=function(){revealFind("Here it is. It goes back in the pile for another try.");};
+  $("#nextBtn").onclick=advance;
+}
+function revealFind(msg){
+  if(locked) return; locked=true;
+  setCls(cur,"missed",true); ring(cur); record(cur,false); missed.push(cur); requeueLater(cur);
+  if(sizes[cur]!==undefined&&sizes[cur]<unit*8) zoomTo(cur);
+  fb(msg,"bad"); $("#showMe").hidden=true; $("#nextBtn").hidden=false; $("#nextBtn").focus();
+}
+var laterQueue=[];
+function requeueLater(c){requeue(c);}
+function onCountryClick(c){
+  if(mode==="explore"){selectCountry(c,false);return;}
+  if(mode!=="find"||locked||!cur) return;
+  if(pool().indexOf(c)<0) return;
+  if(c===cur){
+    locked=true;
+    if(tries===0){setCls(c,"got",true);firstTry++;record(c,true);fb("Yes, that’s "+BY[c].n+".","good");}
+    else{setCls(c,"late",true);record(c,false);fb("Got it on try "+(tries+1)+".","good");}
+    done++;
+    setTimeout(function(){if(mode==="find")advance();},900);
+  }else{
+    tries++; flash(c);
+    if(tries>=3){revealFind("That was "+BY[c].n+". Here’s "+BY[cur].n+".");}
+    else fb("That’s "+BY[c].n+". Try again.","bad");
+  }
+}
+function fb(msg,kind){var f=$("#fb");if(f){f.textContent=msg;f.className="feedback "+(kind||"");}}
+function countHTML(){
+  return "<p class=\"count\">Card "+(Math.min(idx+1,deck.length))+" of "+deck.length+". "+firstTry+" right on the first try.</p>";
+}
+
+/* name it */
+function renderName(){
+  setCls(cur,"target",true); ring(cur);
+  if(sizes[cur]!==undefined&&sizes[cur]<unit*5) zoomTo(cur);
+  panel.innerHTML=
+    "<h2>Name it</h2>"+
+    "<p class=\"help\">Which country is highlighted in gold? Type it, or flip the card if you’re stuck.</p>"+
+    "<p class=\"prompt\" id=\"prompt\">?</p>"+
+    "<input class=\"guess\" id=\"guess\" type=\"text\" autocomplete=\"off\" autocapitalize=\"words\" spellcheck=\"false\" placeholder=\"Type the country\" aria-label=\"Country name\">"+
+    "<p class=\"feedback\" id=\"fb\"></p>"+
+    "<div class=\"row\" id=\"acts\"><button class=\"btn primary\" id=\"check\">Check</button><button class=\"btn\" id=\"flip\">Flip card</button></div>"+
+    countHTML();
+  var g=$("#guess");
+  $("#check").onclick=checkName;
+  $("#flip").onclick=flipName;
+  g.addEventListener("keydown",function(e){if(e.key==="Enter"){e.preventDefault();if(revealed)return;checkName();}});
+  if(window.matchMedia("(hover:hover)").matches) g.focus();
+}
+function checkName(){
+  if(locked) return;
+  var g=$("#guess"), v=g.value;
+  if(!v.trim()){fb("Type a name first, or flip the card.","info");return;}
+  if(matches(cur,v)){
+    locked=true; setCls(cur,"target",false); setCls(cur,"got",true);
+    $("#prompt").textContent=BY[cur].n;
+    if(tries===0){firstTry++;record(cur,true);} else record(cur,false);
+    done++; fb("Correct.","good");
+    setTimeout(function(){if(mode==="name"){setCls(cur,"got",false);advance();}},1000);
+  }else if(cur==="CD"&&norm(v)==="congo"){
+    fb("Close. Which Congo? This one’s capital is Kinshasa.","info");
+  }else{
+    tries++;
+    if(tries>=2){flipName();}
+    else fb("Not quite. One more try.","bad");
+  }
+}
+function flipName(){
+  if(locked) return; locked=true; revealed=true;
+  var pr=$("#prompt"); pr.textContent=BY[cur].n; pr.classList.add("flip-in");
+  fb("Did you know it?","info");
+  $("#acts").innerHTML="<button class=\"btn good\" id=\"knew\">I knew it</button><button class=\"btn bad\" id=\"didnt\">Still learning</button>";
+  $("#knew").onclick=function(){record(cur,tries===0);if(tries===0)firstTry++;done++;advance();};
+  $("#didnt").onclick=function(){record(cur,false);missed.push(cur);requeue(cur);advance();};
+  $("#knew").focus();
+}
+
+/* capitals */
+function renderCapital(){
+  if(mapOK){setCls(cur,"target",true);ring(cur);}
+  var x=BY[cur], front=capDir==="toCap"?x.n:x.cap, ask=capDir==="toCap"?"What’s the capital?":"Which country is this the capital of?";
+  panel.innerHTML=
+    "<h2>Capitals flashcards</h2>"+
+    "<div class=\"seg\" role=\"group\" aria-label=\"Card direction\"><button data-d=\"toCap\" aria-pressed=\""+(capDir==="toCap")+"\">Country to capital</button><button data-d=\"toCountry\" aria-pressed=\""+(capDir==="toCountry")+"\">Capital to country</button></div>"+
+    "<button class=\"card\" id=\"card\" aria-label=\"Flashcard. Tap to flip.\"><span class=\"side\">"+ask+"</span><span class=\"face\">"+esc(front)+"</span><span class=\"side\">Tap to flip</span></button>"+
+    "<div class=\"row\" id=\"acts\"></div>"+
+    countHTML();
+  if(capDir==="toCountry"&&mapOK){setCls(cur,"target",false);clearRing();}
+  panel.querySelector(".seg").onclick=function(e){var b=e.target.closest("button");if(!b)return;capDir=b.getAttribute("data-d");startMode();};
+  $("#card").onclick=flipCap;
+}
+function flipCap(){
+  if(revealed) return; revealed=true;
+  var x=BY[cur], card=$("#card");
+  var back=capDir==="toCap"?x.cap:x.n;
+  card.classList.add("flipped");
+  card.innerHTML="<span class=\"side\">"+esc(capDir==="toCap"?x.n:x.cap)+"</span><span class=\"face flip-in\">"+esc(back)+"</span>"+(NOTES[cur]?"<span class=\"note\">"+esc(NOTES[cur])+"</span>":"");
+  if(capDir==="toCountry"&&mapOK){setCls(cur,"target",true);ring(cur);}
+  $("#acts").innerHTML="<button class=\"btn good\" id=\"knew\">I knew it</button><button class=\"btn bad\" id=\"didnt\">Still learning</button>";
+  $("#knew").onclick=function(){recordCap(cur,true);firstTry++;done++;advance();};
+  $("#didnt").onclick=function(){recordCap(cur,false);missed.push(cur);requeue(cur);advance();};
+  $("#knew").focus();
+}
+
+/* summary */
+function renderSummary(){
+  clearRing();
+  var uniq=missed.filter(function(c,i){return missed.indexOf(c)===i;});
+  var label=mode==="find"?"found on the first try":(mode==="name"?"named on the first try":"capitals you knew");
+  var right=total-uniq.length;
+  panel.innerHTML=
+    "<h2>Round complete</h2>"+
+    "<p class=\"big-score\">"+right+" / "+total+"</p>"+
+    "<p>"+label+".</p>"+
+    (uniq.length?"<p class=\"help\">To review: "+uniq.map(function(c){return esc(BY[c].n);}).join(", ")+".</p>":"<p class=\"help\">A clean round. Try another region or another mode.</p>")+
+    "<div class=\"row\">"+(uniq.length?"<button class=\"btn primary\" id=\"again\">Practice the "+uniq.length+" I missed</button>":"")+"<button class=\"btn\" id=\"restart\">Shuffle and restart</button></div>";
+  var a=$("#again"); if(a) a.onclick=function(){startMode(shuffle(uniq));};
+  $("#restart").onclick=function(){startMode();};
+}
+
+document.getElementById("resetProgress").onclick=function(){
+  if(!confirm("Clear all saved progress on this device?")) return;
+  prog={}; save(); updateMeter(); startMode();
+};
+
+/* ---------- init ---------- */
+renderRegions(); updateMeter();
+mapOK=false;
+try{mapOK=buildMap();}catch(err){mapOK=false;}
+if(!mapOK){var mm=document.getElementById("mapmsg");mm.textContent="The map didn’t load. Check the internet connection and reload. Capitals flashcards still work.";mm.classList.add("show");}
+startMode();
+})();
+</script>
+</body>
+</html>
